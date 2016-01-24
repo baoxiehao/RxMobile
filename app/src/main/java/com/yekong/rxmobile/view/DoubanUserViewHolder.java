@@ -13,7 +13,6 @@ import com.yekong.rxmobile.model.DoubanUser;
 import com.yekong.rxmobile.rx.RxAction;
 import com.yekong.rxmobile.rx.RxBus;
 import com.yekong.rxmobile.rx.RxEvent;
-import com.yekong.rxmobile.util.Logger;
 
 import uk.co.ribot.easyadapter.ItemViewHolder;
 import uk.co.ribot.easyadapter.PositionInfo;
@@ -45,12 +44,8 @@ public class DoubanUserViewHolder extends ItemViewHolder<DoubanUser> {
 
     @Override
     public void onSetValues(final DoubanUser item, final PositionInfo positionInfo) {
-        if (item == DoubanUser.EMPTY) {
-            Logger.d(TAG, "Ignore empty item: " + positionInfo.getPosition());
-            return;
-        }
         Glide.with(getContext())
-                .load(Uri.parse(item.avatar))
+                .load(TextUtils.isEmpty(item.avatar) ? R.mipmap.ic_launcher : Uri.parse(item.avatar))
                 .placeholder(R.mipmap.ic_launcher)
                 .into(mAvatarImage);
         mNameText.setText(item.name);
@@ -63,7 +58,7 @@ public class DoubanUserViewHolder extends ItemViewHolder<DoubanUser> {
         mCloseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RxBus.singleton().send(RxAction.create(RxEvent.USER_ITEM_CLOSE, positionInfo.getPosition()));
+                RxBus.singleton().send(RxAction.create(RxEvent.USER_ITEM_REFRESH, positionInfo.getPosition()));
             }
         });
         getView().setOnClickListener(new View.OnClickListener() {

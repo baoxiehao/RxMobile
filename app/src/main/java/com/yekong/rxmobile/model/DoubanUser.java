@@ -33,5 +33,8 @@ public class DoubanUser extends BaseModel {
     public DoubanUser() {
         name = "姓名";
         desc = "描述";
+        avatar = "";
     }
+
+
 }

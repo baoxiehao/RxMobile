@@ -1,7 +1,10 @@
 package com.yekong.rxmobile.rx;
 
 
+import android.text.TextUtils;
+
 import rx.Observable;
+import rx.functions.Func1;
 import rx.subjects.PublishSubject;
 import rx.subjects.SerializedSubject;
 import rx.subjects.Subject;
@@ -27,5 +30,19 @@ public class RxBus {
 
     public Observable<Object> toObservable() {
         return mBus;
+    }
+
+    public <T> Observable<T> toActionObservable(final String rxEvent) {
+        return mBus.filter(new Func1<Object, Boolean>() {
+            @Override
+            public Boolean call(Object o) {
+                return (o instanceof RxAction) && TextUtils.equals(((RxAction) o).type, rxEvent);
+            }
+        }).map(new Func1<Object, T>() {
+            @Override
+            public T call(Object o) {
+                return (T) ((RxAction) o).data;
+            }
+        });
     }
 }
